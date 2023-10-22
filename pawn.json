@@ -1,0 +1,6 @@
+{
+    "user": "shierru",
+    "repo": "Debug-include",
+    "contributors": ["shierru"],
+    "dependencies": ["openmultiplayer/omp-stdlib", "pawn-lang/YSI-Includes"]
+}

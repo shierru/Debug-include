@@ -65,14 +65,13 @@ enum DEBUG_TYPES
     // If the output is directed to a specific player or console, the server will shut down after the message is sent
     DEBUG_TYPE_ERROR_FATAL
 };
-#define MAX_DEBUG_TYPES     DEBUG_TYPES
+static stock DEBUG_TYPES:_@DEBUG_TYPES() { return DEBUG_TYPES; }
 
-// Alternative definitions
-#define INFO                DEBUG_TYPES:DEBUG_TYPE_INFO
-#define WARNING             DEBUG_TYPES:DEBUG_TYPE_WARNING
-
-#define ERROR               DEBUG_TYPES:DEBUG_TYPE_ERROR
-#define ERROR_FATAL         DEBUG_TYPES:DEBUG_TYPE_ERROR_FATAL
+#define UNKNOWN                       (DEBUG_TYPES:-1)
+#define INFO                          (DEBUG_TYPES:0)
+#define WARNING                       (DEBUG_TYPES:1)
+#define ERROR                         (DEBUG_TYPES:2)
+#define ERROR_FATAL                   (DEBUG_TYPES:3)
 
 /// <p/>
 
@@ -122,6 +121,9 @@ stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour 
     #pragma unused playerid
     #pragma unused colour
 
+    if(type == DEBUG_TYPE_UNKNOWN)
+        return 0;
+
     // Before using for correctness of further message output we zeroize the array
     YSI_UNSAFE_HUGE_STRING[0] = '\0';
 
@@ -137,13 +139,16 @@ stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour 
 
     // If the error is fatal, then after sending the message we disconnect the server
     // But if it is different, just output to the console
-    return (type == DEBUG_TYPES:DEBUG_TYPE_ERROR_FATAL ? SendRconCommand("exit") : ret);
+    return (type == DEBUG_TYPE_ERROR_FATAL ? SendRconCommand("exit") : ret);
 }
 
 stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour = -1, const message[], OPEN_MP_TAGS:...)  <_@DEBUG:Player>
 {
     if(playerid == INVALID_PLAYER_ID || !IsPlayerConnected(playerid))
-        return false;
+        return 0;
+
+    if(type == DEBUG_TYPE_UNKNOWN)
+        return 0;
 
     // Before using for correctness of further message output we zeroize the array
     YSI_UNSAFE_HUGE_STRING[0] = '\0';
@@ -160,9 +165,9 @@ stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour 
 
     // If it's a simple error, just disconnect the player from the server
     // But if the error is fatal, then after sending the message we disconnect the server
-    if(type == DEBUG_TYPES:DEBUG_TYPE_ERROR)
+    if(type == DEBUG_TYPE_ERROR)
         ret = Kick(playerid);
-    else if(type == DEBUG_TYPES:DEBUG_TYPE_ERROR_FATAL)
+    else if(type == DEBUG_TYPE_ERROR_FATAL)
         ret = SendRconCommand("exit");
 
     return ret;

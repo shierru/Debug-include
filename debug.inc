@@ -139,7 +139,7 @@ stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour 
 
     // If the error is fatal, then after sending the message we disconnect the server
     // But if it is different, just output to the console
-    return (type == DEBUG_TYPE_ERROR_FATAL ? SendRconCommand("exit") : ret);
+    return (type == DEBUG_TYPE_ERROR_FATAL ? (_:SendRconCommand("exit")) : ret);
 }
 
 stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour = -1, const message[], OPEN_MP_TAGS:...)  <_@DEBUG:Player>

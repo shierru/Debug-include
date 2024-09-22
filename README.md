@@ -2,6 +2,9 @@
 
 This include adds the ability to defer to console/chat.
 
+## What happens if DEBUG_ON is not defined?
+If ```DEBUG_ON``` is not defined, the functions for bookmarking will not be compiled, they will simply be replaced by an empty string (you can see this by using the -l flag when compiling and looking at the resulting file).
+
 ## Example
 ```pawn
 #define DEBUG_ON

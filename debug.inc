@@ -74,24 +74,23 @@ static stock DEBUG_TYPES:_@DEBUG_TYPES() { return DEBUG_TYPES; }
 #define ERROR_FATAL                   (DEBUG_TYPES:3)
 
 /// <p/>
-
 #if defined DEBUG_ON
-    #define _@DEBUG_STATE(%0)         state _@DEBUG:%0
+    #define _@DEBUG_STATE(%0) state _@DEBUG:%0
+
+    #define _@DEBUG_CONSOLE: _@DEBUG_CONSOLE0:_@DEBUG_CONSOLE1:
+    #define _@DEBUG_CONSOLE0:_@DEBUG_CONSOLE1:%0(%2) _@DEBUG_STATE(Console);_DEBUG@PRINT(%0,_,_,%2)
+    #define _@DEBUG_CONSOLE1:%0(%2,%3) _@DEBUG_STATE(Console);_DEBUG@PRINT(%0,_,_,%2,%3)
+
+    #define _@DEBUG_PLAYER: _@DEBUG_PLAYER0:_@DEBUG_PLAYER1:
+    #define _@DEBUG_PLAYER0:_@DEBUG_PLAYER1:%0(%1,%2,%3) _@DEBUG_STATE(Player);_DEBUG@PRINT(%0,%1,%2,%3)
+    #define _@DEBUG_PLAYER1:%0(%1,%2,%3,%4) _@DEBUG_STATE(Player);_DEBUG@PRINT(%0,%1,%2,%3,%4)
+
+    #define C:%0(%1) _@DEBUG_CONSOLE:%0(%1)
+    #define P:%0(%1) _@DEBUG_PLAYER:%0(%1)
 #else
-    #define _@DEBUG_STATE(%0)         state _@DEBUG:None
+    #define C:%0(%1);
+    #define P:%0(%1);
 #endif
-
-#define _@DEBUG_CONSOLE: _@DEBUG_CONSOLE0:_@DEBUG_CONSOLE1:
-#define _@DEBUG_CONSOLE0:_@DEBUG_CONSOLE1:%0(%2) _@DEBUG_STATE(Console);_DEBUG@PRINT(%0,_,_,%2)
-#define _@DEBUG_CONSOLE1:%0(%2,%3) _@DEBUG_STATE(Console);_DEBUG@PRINT(%0,_,_,%2,%3)
-
-#define _@DEBUG_PLAYER: _@DEBUG_PLAYER0:_@DEBUG_PLAYER1:
-#define _@DEBUG_PLAYER0:_@DEBUG_PLAYER1:%0(%1,%2,%3) _@DEBUG_STATE(Player);_DEBUG@PRINT(%0,%1,%2,%3)
-#define _@DEBUG_PLAYER1:%0(%1,%2,%3,%4) _@DEBUG_STATE(Player);_DEBUG@PRINT(%0,%1,%2,%3,%4)
-
-// Interface
-#define C:%0(  _@DEBUG_CONSOLE:%0(
-#define P:%0(  _@DEBUG_PLAYER:%0(
 
 // Static function
 static stock strcatPrintType(DEBUG_TYPES:type, dest[], len = sizeof (dest))
@@ -171,13 +170,4 @@ stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour 
         ret = SendRconCommand("exit");
 
     return ret;
-}
-
-stock _DEBUG@PRINT(DEBUG_TYPES:type, playerid = INVALID_PLAYER_ID, const colour = -1, const message[], OPEN_MP_TAGS:...) <_@DEBUG:None>
-{
-    #pragma unused type
-    #pragma unused playerid
-    #pragma unused colour
-    #pragma unused message
-    return 0;
 }

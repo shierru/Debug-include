@@ -28,4 +28,4 @@ public OnPlayerConnect(playerid)
 ```
 
 ### Why? There are already analogs.
-This repository and include are intended for internal use and were not made for use in a public environment.
+This repository and include are for internal use.
